@@ -15,10 +15,27 @@ import commands
 """Copy Special exercise
 """
 
-# +++your code here+++
 # Write functions and modify main() to call them
+def find_files(dir):
+  files = []
+  for filename in os.listdir(dir):
+    if re.search(r'__\w+__', filename):
+      files.append(os.path.abspath(os.path.join(dir, filename)))
+  return files
 
+def copy_files(files, dir):
+  if not os.path.exists(dir):
+    os.mkdir(dir)
+  for filename in files:
+    shutil.copy(filename, dir)
+  return
 
+def zip_files(files, zip):
+  cmd = 'zip -j ' + zip + ' ' + ' '.join(files)
+  status, output = commands.getstatusoutput(cmd)
+  if status:
+    sys.stderr.write(output + '\n')
+    sys.exit(1)
 
 def main():
   # This basic command line argument parsing code is provided.
@@ -48,8 +65,17 @@ def main():
     print "error: must specify one or more dirs"
     sys.exit(1)
 
-  # +++your code here+++
   # Call your functions
+  files = []
+  for a in args:
+    files += find_files(a)
+
+  if todir:
+    copy_files(files, todir)
+  elif tozip:
+    zip_files(files, tozip)
+  else:
+    print '\n'.join(files)
   
 if __name__ == "__main__":
   main()
