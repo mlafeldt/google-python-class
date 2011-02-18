@@ -40,9 +40,21 @@ def extract_names(filename):
   followed by the name-rank strings in alphabetical order.
   ['2006', 'Aaliyah 91', Aaron 57', 'Abagail 895', ' ...]
   """
-  # +++your code here+++
-  return
+  f = open(filename, 'r')
+  text = f.read()
+  f.close()
 
+  year = re.search('Popularity in (\d{4})', text).group(1)
+  names = [ year ]
+
+  d = {}
+  for rank, boy, girl in re.findall(r'<td>(\d+)</td><td>(\w+)</td><td>(\w+)</td>', text):
+    d[boy] = rank
+    d[girl] = rank
+
+  for k, v in sorted(d.items()):
+    names.append(k + " " + v)
+  return names
 
 def main():
   # This command-line parsing code is provided.
@@ -60,9 +72,16 @@ def main():
     summary = True
     del args[0]
 
-  # +++your code here+++
   # For each filename, get the names, then either print the text output
   # or write it to a summary file
+  for a in args:
+    names = '\n'.join(extract_names(a))
+    if summary:
+      f = open(a + '.summary', 'w')
+      f.write(names + '\n')
+      f.close()
+    else:
+      print names
   
 if __name__ == '__main__':
   main()
