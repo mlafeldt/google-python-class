@@ -17,11 +17,8 @@ import commands
 
 # Write functions and modify main() to call them
 def find_files(dir):
-  files = []
-  for filename in os.listdir(dir):
-    if re.search(r'__\w+__', filename):
-      files.append(os.path.abspath(os.path.join(dir, filename)))
-  return files
+  return [ os.path.abspath(os.path.join(dir, f))
+    for f in os.listdir(dir) if re.search(r'__\w+__', f) ]
 
 def copy_files(files, dir):
   if not os.path.exists(dir):
